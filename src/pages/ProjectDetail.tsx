@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +42,11 @@ const ProjectDetail = () => {
       });
       setNewComment("");
     }
+  };
+
+  // Helper function to check if field is empty or shows "No ... available"
+  const isEmptyField = (value: string) => {
+    return !value || value.trim() === '' || value.startsWith('No ') && value.endsWith(' available');
   };
 
   return (
@@ -100,7 +106,9 @@ const ProjectDetail = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
-                <p className="text-lg font-semibold text-gray-900">{project.status}</p>
+                <p className={`text-lg font-semibold ${isEmptyField(project.status) ? 'text-gray-500 italic' : 'text-gray-900'}`}>
+                  {project.status}
+                </p>
               </CardContent>
             </Card>
 
@@ -117,7 +125,9 @@ const ProjectDetail = () => {
                   {project.nextSteps.map((step, index) => (
                     <li key={index} className="flex items-start">
                       <div className="h-2 w-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-gray-700">{step}</span>
+                      <span className={`${isEmptyField(step) ? 'text-gray-500 italic' : 'text-gray-700'}`}>
+                        {step}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -166,13 +176,11 @@ const ProjectDetail = () => {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="mb-4">
-                  {project.comments ? (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="text-gray-700">{project.comments}</p>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 italic">No comments added.</p>
-                  )}
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className={`${isEmptyField(project.comments || '') ? 'text-gray-500 italic' : 'text-gray-700'}`}>
+                      {project.comments || 'No comments available'}
+                    </p>
+                  </div>
                 </div>
                 
                 <Separator className="my-4" />

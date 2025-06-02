@@ -54,17 +54,22 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
           if (!row[projectIndex]) continue; // Skip empty rows
 
           const projectName = row[projectIndex]?.toString() || '';
-          const vendor = row[vendorIndex]?.toString() || '';
-          const status = row[statusIndex]?.toString() || '';
+          const vendor = row[vendorIndex]?.toString() || 'No vendor available';
+          const status = row[statusIndex]?.toString() || 'No status available';
           const nextStepsText = row[nextStepsIndex]?.toString() || '';
           const comments = row[commentsIndex]?.toString() || '';
           const documentLink = row[documentIndex]?.toString() || '';
 
-          // Split next steps by line breaks or semicolons
-          const nextSteps = nextStepsText
-            .split(/[\n;,]/)
-            .map(step => step.trim())
-            .filter(step => step.length > 0);
+          // Handle next steps - if empty, show "No next steps available"
+          let nextSteps: string[];
+          if (!nextStepsText.trim()) {
+            nextSteps = ['No next steps available'];
+          } else {
+            nextSteps = nextStepsText
+              .split(/[\n;,]/)
+              .map(step => step.trim())
+              .filter(step => step.length > 0);
+          }
 
           // Generate a simple ID from project name
           const id = projectName.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -74,8 +79,8 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
             name: projectName,
             vendor,
             status,
-            nextSteps: nextSteps.length > 0 ? nextSteps : ['No next steps defined'],
-            comments,
+            nextSteps,
+            comments: comments || 'No comments available',
             oneDriveLink: documentLink || 'https://example-onedrive.com/' + id,
             documents: [
               'Project Proposal.pdf',
