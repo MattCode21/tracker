@@ -1,5 +1,4 @@
-
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,10 +12,12 @@ import { useToast } from "@/hooks/use-toast";
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [newComment, setNewComment] = useState("");
   
-  const project = projects.find(p => p.id === id);
+  // Get project from location state (passed from Index) or fallback to static data
+  const project = location.state?.project || projects.find(p => p.id === id);
   
   if (!project) {
     return (
